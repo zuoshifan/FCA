@@ -96,7 +96,7 @@ def free_entropy_selfadj(X):
     N, M = X.shape
     assert N == M and np.allclose(X, np.conj(X.T)), 'X is not a self-adjoint matrix'
     e, U = la.eigh(X)
-    chi = np.sum([ np.log(np.abs(e[i] - e[j])) for i in range(N) for j in range(i+1, N) ]) / (N*(N-1))
+    chi = 2 * np.sum([ np.log(np.abs(e[i] - e[j])) for i in range(N) for j in range(i+1, N) ]) / (N*(N-1))
 
     return chi
 
@@ -107,10 +107,15 @@ def free_entropy_rectangular(X):
     XXH = np.dot(X, np.conj(X.T))
     # e, U = la.eigh(XXH)
     e, U = np.linalg.eigh(XXH)
+    # e = np.unique(e[e>0]) # only unique positive ones
+    e = e[e>0.0] # only positive ones
+    # e = e[e>1.0e-8*e[-1]] # drop very small ones
     a, b = 1.0*N / (N + M), 1.0*M / (N + M)
-    sum_log_diff = np.sum([ np.log(np.abs(e[i] - e[j])) for i in range(N) for j in range(i+1, N) ])
+    # sum_log_diff = 2 * np.sum([ np.log(np.abs(e[i] - e[j])) for i in range(N) for j in range(i+1, N) ])
+    N1 = len(e)
+    sum_log_diff = 2 * np.sum([ np.log(np.abs(e[i] - e[j])) for i in range(N1) for j in range(i+1, N1) ])
     sum_log = np.sum(np.log(e))
-    chi = (a**2 / N*(N - 1)) * sum_log_diff + ((b - a)*a / N) * sum_log
+    chi = a**2 / (N*(N - 1)) * sum_log_diff + ((b - a)*a / N) * sum_log
 
     return chi
 
@@ -137,7 +142,8 @@ def fcf(Fhat, Z, type='rectangular', nc=None, return_Fhat=False):
 
     # A solver that involves the hessian
     # solver = TrustRegions(mingradnorm=1e-8)
-    solver = SteepestDescent(mingradnorm=1e-8)
+    # solver = SteepestDescent(mingradnorm=1e-8)
+    solver = SteepestDescent(mingradnorm=1e-8, maxtime=3000)
 
     # O(s)
     manifold = Rotations(s, 1)
