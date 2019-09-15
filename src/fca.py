@@ -152,14 +152,14 @@ def fcf(Fhat, Z, type='rectangular', nc=None, return_Fhat=False):
     Ahat = np.dot(Us*es, Wopt)
     # get Xhat, which is actually = S^-1 P^-1 Xc^w
     Xhat = np.tensordot(la.inv(Wopt), Y, axes=(1, 0))
-    assert np.allclose(Zc, np.tensordot(Ahat, Xhat, axes=(1, 0))), 'Something may be wring as Zc != Ahat Xhat'
+    # assert np.allclose(Zc, np.tensordot(Ahat, Xhat, axes=(1, 0))), 'Something may be wrong as Zc != Ahat Xhat'
 
     # re=order Xhat and Ahat, from more non-Gaussian to more Gaussian
     Fhat_values = np.array([ Fhat(Xhat[i]) for i in range(s) ])
     inds = np.argsort(Fhat_values)
     Ahat = Ahat[:, inds]
     Xhat = Xhat[inds]
-    assert np.allclose(Zc, np.tensordot(Ahat, Xhat, axes=(1, 0))), 'Something may be wring as Zc != Ahat Xhat'
+    # assert np.allclose(Zc, np.tensordot(Ahat, Xhat, axes=(1, 0))), 'Something may be wrong as Zc != Ahat Xhat'
 
     if return_Fhat:
         return Ahat, Xhat, Fhat_values[inds]

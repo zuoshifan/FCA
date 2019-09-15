@@ -90,14 +90,14 @@ def icf(Fhat, Z, nc=None, return_Fhat=False):
     Ahat = np.dot(Us*es, Wopt)
     # get xhat, which is actually = S^-1 P^-1 xc^w
     xhat = np.dot(la.inv(Wopt), y)
-    assert np.allclose(zc, np.dot(Ahat, xhat)), 'Something may be wring as zc != Ahat xhat'
+    # assert np.allclose(zc, np.dot(Ahat, xhat)), 'Something may be wrong as zc != Ahat xhat'
 
     # re=order xhat and Ahat, from more non-Gaussian to more Gaussian
     Fhat_values = np.array([ Fhat(xhat[i]) for i in range(s) ])
     inds = np.argsort(Fhat_values)
     Ahat = Ahat[:, inds]
     xhat = xhat[inds]
-    assert np.allclose(zc, np.dot(Ahat, xhat)), 'Something may be wring as zc != Ahat xhat'
+    # assert np.allclose(zc, np.dot(Ahat, xhat)), 'Something may be wrong as zc != Ahat xhat'
     # reshape xhat to an array of matrices Xhat
     Xhat = xhat.reshape((s, N, M))
 
