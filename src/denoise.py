@@ -3,6 +3,7 @@ import numpy as np
 from scipy.ndimage import imread
 import fca
 import ica
+import pca
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -118,54 +119,18 @@ plt.savefig(output_dir + 'X2_entropy.png')
 plt.close()
 
 
+# unmix the images by using variance based PCA
+Aest, Xest, Fvs = pca.pcf(pca.Fhat_variance, Z, return_Fhat=True)
+print '-|c2|: ', Fvs
 
 
+# plot the unmixed images
+plt.figure()
+plt.imshow(Xest[0], aspect='auto', cmap='gray')
+plt.savefig(output_dir + 'X1_variance.png')
+plt.close()
 
-
-
-
-
-
-# # plt.figure()
-# # plt.imshow(I1, aspect='auto', cmap='gray')
-# # plt.savefig('I1_denoise.png')
-# # plt.close()
-
-# # plt.figure()
-# # plt.imshow(I2, aspect='auto', cmap='gray')
-# # plt.savefig('I2_denoise.png')
-# # plt.close()
-
-# X = np.dstack([I1, I2]).transpose(2, 0, 1)
-# print X.shape
-
-# A = np.array([[1.0, 1.0], [1.0, -1.0]]) / np.sqrt(2)
-# Z = np.tensordot(A, X, axes=(1, 0))
-# print Z.shape
-
-# # plt.figure()
-# # plt.imshow(Z[0], aspect='auto', cmap='gray')
-# # plt.savefig('Z1_denoise.png')
-# # plt.close()
-
-# # plt.figure()
-# # plt.imshow(Z[1], aspect='auto', cmap='gray')
-# # plt.savefig('Z2_denoise.png')
-# # plt.close()
-
-# # Aest, Xest = fca.fcf(fca.Fhat_free_kurtosis, Z)
-# Aest, Xest = fca.fcf(fca.Fhat_free_entropy, Z)
-
-# print Aest
-# print A
-# print np.dot(la.inv(Aest), A)
-
-# plt.figure()
-# plt.imshow(Xest[0], aspect='auto', cmap='gray')
-# plt.savefig('X1_denoise_free_entropy.png')
-# plt.close()
-
-# plt.figure()
-# plt.imshow(Xest[1], aspect='auto', cmap='gray')
-# plt.savefig('X2_denoise_free_entropy.png')
-# plt.close()
+plt.figure()
+plt.imshow(Xest[1], aspect='auto', cmap='gray')
+plt.savefig(output_dir + 'X2_variance.png')
+plt.close()

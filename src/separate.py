@@ -3,6 +3,7 @@ import numpy as np
 from scipy.ndimage import imread
 import fca
 import ica
+import pca
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -117,4 +118,21 @@ plt.close()
 plt.figure()
 plt.imshow(Xest[1], aspect='auto', cmap='gray')
 plt.savefig(output_dir + 'X2_entropy.png')
+plt.close()
+
+
+# unmix the images by using variance based PCA
+Aest, Xest, Fvs = pca.pcf(pca.Fhat_variance, Z, return_Fhat=True)
+print '-|c2|: ', Fvs
+
+
+# plot the unmixed images
+plt.figure()
+plt.imshow(Xest[0], aspect='auto', cmap='gray')
+plt.savefig(output_dir + 'X1_variance.png')
+plt.close()
+
+plt.figure()
+plt.imshow(Xest[1], aspect='auto', cmap='gray')
+plt.savefig(output_dir + 'X2_variance.png')
 plt.close()
