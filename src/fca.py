@@ -107,6 +107,8 @@ def free_entropy_rectangular(X):
     XXH = np.dot(X, np.conj(X.T))
     # e, U = la.eigh(XXH)
     e, U = np.linalg.eigh(XXH)
+    # U, s, VT = np.linalg.svd(X, full_matrices=False)
+    # e = s[s>0.0]**2
     # e = np.unique(e[e>0]) # only unique positive ones
     e = e[e>0.0] # only positive ones
     # e = e[e>1.0e-8*e[-1]] # drop very small ones
@@ -143,7 +145,7 @@ def fcf(Fhat, Z, type='rectangular', nc=None, return_Fhat=False):
     # A solver that involves the hessian
     # solver = TrustRegions(mingradnorm=1e-8)
     # solver = SteepestDescent(mingradnorm=1e-8)
-    solver = SteepestDescent(mingradnorm=1e-8, maxtime=3000)
+    solver = SteepestDescent(mingradnorm=1e-8, maxtime=36000, maxiter=3000)
 
     # O(s)
     manifold = Rotations(s, 1)
@@ -157,7 +159,9 @@ def fcf(Fhat, Z, type='rectangular', nc=None, return_Fhat=False):
     # get Ahat, which is actually = A Cxx^(1/2) P S
     Ahat = np.dot(Us*es, Wopt)
     # get Xhat, which is actually = S^-1 P^-1 Xc^w
-    Xhat = np.tensordot(la.inv(Wopt), Y, axes=(1, 0))
+    # Xhat = np.tensordot(la.inv(Wopt), Y, axes=(1, 0))
+    # Wopt is orthogonal, so Wopt.T = la.inv(Wopt)
+    Xhat = np.tensordot(Wopt.T, Y, axes=(1, 0))
     # assert np.allclose(Zc, np.tensordot(Ahat, Xhat, axes=(1, 0))), 'Something may be wrong as Zc != Ahat Xhat'
 
     # re=order Xhat and Ahat, from more non-Gaussian to more Gaussian

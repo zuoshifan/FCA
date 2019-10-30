@@ -89,7 +89,9 @@ def icf(Fhat, Z, nc=None, return_Fhat=False):
     # get Ahat, which is actually = A Cxx^(1/2) P S
     Ahat = np.dot(Us*es, Wopt)
     # get xhat, which is actually = S^-1 P^-1 xc^w
-    xhat = np.dot(la.inv(Wopt), y)
+    # xhat = np.dot(la.inv(Wopt), y)
+    # Wopt is orthogonal, so Wopt.T = la.inv(Wopt)
+    xhat = np.dot(Wopt.T, y)
     # assert np.allclose(zc, np.dot(Ahat, xhat)), 'Something may be wrong as zc != Ahat xhat'
 
     # re=order xhat and Ahat, from more non-Gaussian to more Gaussian
