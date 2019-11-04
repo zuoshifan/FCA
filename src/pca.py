@@ -66,7 +66,7 @@ def pcf(Fhat, Z, nc=None, return_Fhat=False):
     xhat = np.dot(Us.T, zc)
     # print variance(xhat[0]), variance(xhat[1])
     # print es
-    s = len(e[e>0])
+    s = len(es)
     _, N, M = Z.shape
 
     # re=order xhat and Ahat, from more non-Gaussian to more Gaussian
